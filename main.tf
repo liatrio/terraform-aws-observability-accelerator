@@ -1,5 +1,5 @@
 locals {
-  name        = "aws-observability-accelerator"
+  name        = "aws-observability-accelerator-prometheus"
   description = "Amazon Managed Grafana workspace for ${local.name}"
 
   tags = {
