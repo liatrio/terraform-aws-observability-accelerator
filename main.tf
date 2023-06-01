@@ -1,5 +1,5 @@
 locals {
-  name        = local.locals_vars.locals.name
+  #name        = local.locals_vars.locals.name
   description = "Amazon Managed Grafana workspace for ${local.name}"
 
   tags = {
