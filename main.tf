@@ -68,6 +68,8 @@ module "managed_grafana" {
   data_sources              = ["CLOUDWATCH", "PROMETHEUS", "XRAY"]
   notification_destinations = ["SNS"]
   stack_set_name            = local.name
+  create                    = var.create
+  create_workspace          = var.create_workspace
 
   configuration = jsonencode({
     unifiedAlerting = {
