@@ -114,3 +114,5 @@ data "aws_iam_policy_document" "assume" {
     }
   }
 }
+
+data "aws_partition" "current" {}
