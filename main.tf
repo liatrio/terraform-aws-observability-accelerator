@@ -1,3 +1,12 @@
+locals {
+  create_role   = var.create && var.create_iam_role
+  #iam_role_name = coalesce(var.iam_role_name, var.name)
+
+  #create_account_policy = local.create_role && var.account_access_type == "CURRENT_ACCOUNT"
+  #create_custom_policy  = length(setintersection(var.data_sources, ["CLOUDWATCH", "AMAZON_OPENSEARCH_SERVICE", "PROMETHEUS", "SNS"])) > 0
+}
+
+
 resource "aws_prometheus_workspace" "this" {
   count = var.enable_managed_prometheus ? 1 : 0
 
@@ -89,4 +98,19 @@ resource "aws_iam_role" "this" {
   permissions_boundary  = var.iam_role_permissions_boundary
 
   tags = merge(var.tags, var.iam_role_tags)
+}
+
+data "aws_iam_policy_document" "assume" {
+  count = local.create_role ? 1 : 0
+
+  statement {
+    sid     = "GrafanaAssume"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["grafana.${data.aws_partition.current.dns_suffix}"]
+    }
+  }
 }
