@@ -63,7 +63,7 @@ module "managed_grafana" {
   associate_license         = false
   description               = local.description
   account_access_type       = "CURRENT_ACCOUNT"
-  authentication_providers  = ["AWS_SSO"]
+  authentication_providers  = ["SAML"]
   permission_type           = "SERVICE_MANAGED"
   data_sources              = ["CLOUDWATCH", "PROMETHEUS", "XRAY"]
   notification_destinations = ["SNS"]
