@@ -80,7 +80,6 @@ variable "vpc_configuration" {
   default     = {}
 }
 
-
 variable "iam_role_arn" {
   description = "Existing IAM role ARN for the workspace. Required if `create_iam_role` is set to `false`"
   type        = string
