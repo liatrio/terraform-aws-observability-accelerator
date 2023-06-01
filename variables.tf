@@ -55,3 +55,27 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "create" {
+  description = "Determines whether a resources will be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_workspace" {
+  description = "Determines whether a workspace will be created or to use an existing workspace"
+  type        = bool
+  default     = true
+}
+
+variable "create_iam_role" {
+  description = "Determines whether a an IAM role is created or to use an existing IAM role"
+  type        = bool
+  default     = true
+}
+
+variable "vpc_configuration" {
+  description = "The configuration settings for an Amazon VPC that contains data sources for your Grafana workspace to connect to"
+  type        = any
+  default     = {}
+}
