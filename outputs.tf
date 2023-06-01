@@ -47,3 +47,13 @@ output "prometheus_data_source_created" {
   description = "Boolean value indicating if the module created a prometheus data source in Amazon Managed Grafana"
   value       = var.create_prometheus_data_source
 }
+
+output "create" {
+  description = "The creatae flag that gets passed to the module."
+  value       = var.create
+}
+
+output "create_workspace" {
+  description = "The create_workspace flag that gets passed to the module."
+  value       = var.create_workspace
+}
