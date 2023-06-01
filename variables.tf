@@ -79,3 +79,15 @@ variable "vpc_configuration" {
   type        = any
   default     = {}
 }
+
+variable "create_iam_role" {
+  description = "Determines whether a an IAM role is created or to use an existing IAM role"
+  type        = bool
+  default     = true
+}
+
+variable "iam_role_arn" {
+  description = "Existing IAM role ARN for the workspace. Required if `create_iam_role` is set to `false`"
+  type        = string
+  default     = null
+}

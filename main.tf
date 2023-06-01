@@ -74,3 +74,19 @@ resource "aws_grafana_workspace" "this" {
 
   tags = var.tags
 }
+
+resource "aws_iam_role" "this" {
+  count = local.create_role ? 1 : 0
+
+  name        = var.use_iam_role_name_prefix ? null : local.iam_role_name
+  name_prefix = var.use_iam_role_name_prefix ? "${local.iam_role_name}-" : null
+  description = var.iam_role_description
+  path        = var.iam_role_path
+
+  assume_role_policy    = data.aws_iam_policy_document.assume[0].json
+  force_detach_policies = var.iam_role_force_detach_policies
+  max_session_duration  = var.iam_role_max_session_duration
+  permissions_boundary  = var.iam_role_permissions_boundary
+
+  tags = merge(var.tags, var.iam_role_tags)
+}
