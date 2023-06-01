@@ -1,7 +1,7 @@
 data "aws_region" "current" {}
 
 data "aws_grafana_workspace" "this" {
-  workspace_id = var.managed_grafana_workspace_id
+  workspace_id = module.managed_grafana.workspace_id
 }
 
 locals {
