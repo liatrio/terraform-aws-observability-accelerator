@@ -13,5 +13,6 @@ locals {
   amg_ws_endpoint = "https://${data.aws_grafana_workspace.this.endpoint}"
   amg_ws_id       = var.managed_grafana_workspace_id
 
-  name = "aws-observability-accelerator"
+  grafana_workspace_id = data.aws_grafana_workspace.this.workspace_id
+  name = "aws-observability-accelerator-2"
 }

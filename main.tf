@@ -35,6 +35,18 @@ provider "grafana" {
   auth = var.grafana_api_key
 }
 
+resource "grafana_api_key" "grafana-key1" {
+  name = "observability-test-api-key"
+  role = "Admin"
+}
+
+resource "aws_grafana_workspace_api_key" "key1" {
+  key_name        = "test-key"
+  key_role        = "VIEWER"
+  seconds_to_live = 3600
+  workspace_id    = local.grafana_workspace_id
+}
+
 resource "grafana_data_source" "amp" {
   count      = var.create_prometheus_data_source ? 1 : 0
   type       = "prometheus"
@@ -70,6 +82,7 @@ module "managed_grafana" {
   stack_set_name            = local.name
   create                    = var.create
   create_workspace          = var.create_workspace
+  workspace_api_keys        = [aws_grafana_workspace_api_key.key1]
 
   configuration = jsonencode({
     unifiedAlerting = {
