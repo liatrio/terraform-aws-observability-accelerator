@@ -35,16 +35,11 @@ provider "grafana" {
   auth = var.grafana_api_key
 }
 
-resource "grafana_api_key" "grafana-key1" {
-  name = "observability-test-api-key"
-  role = "Admin"
-}
-
 resource "aws_grafana_workspace_api_key" "key1" {
-  key_name        = "test-key"
+  key_name        = "test-key1"
   key_role        = "VIEWER"
   seconds_to_live = 3600
-  workspace_id    = local.grafana_workspace_id
+  workspace_id    = local.amg_ws_id
 }
 
 resource "grafana_data_source" "amp" {
@@ -61,7 +56,7 @@ resource "grafana_data_source" "amp" {
   }
 }
 
-# dashboards
+#dashboards
 resource "grafana_folder" "this" {
   count = var.create_dashboard_folder ? 1 : 0
   title = "Observability Accelerator Dashboards"
