@@ -62,39 +62,39 @@ resource "grafana_folder" "this" {
   title = "Observability Accelerator Dashboards"
 }
 
-module "managed_grafana" {
-  source  = "terraform-aws-modules/managed-service-grafana/aws"
-  version = "1.8.0"
+# module "managed_grafana" {
+#   source  = "terraform-aws-modules/managed-service-grafana/aws"
+#   version = "1.8.0"
 
-  name                      = local.name
-  associate_license         = false
-  description               = local.description
-  account_access_type       = "CURRENT_ACCOUNT"
-  authentication_providers  = ["SAML"]
-  permission_type           = "SERVICE_MANAGED"
-  data_sources              = ["CLOUDWATCH", "PROMETHEUS", "XRAY"]
-  notification_destinations = ["SNS"]
-  stack_set_name            = local.name
-  create                    = var.create
-  create_workspace          = var.create_workspace
-  workspace_api_keys        = [aws_grafana_workspace_api_key.key1]
+#   name                      = local.name
+#   associate_license         = false
+#   description               = local.description
+#   account_access_type       = "CURRENT_ACCOUNT"
+#   authentication_providers  = ["SAML"]
+#   permission_type           = "SERVICE_MANAGED"
+#   data_sources              = ["CLOUDWATCH", "PROMETHEUS", "XRAY"]
+#   notification_destinations = ["SNS"]
+#   stack_set_name            = local.name
+#   create                    = var.create
+#   create_workspace          = var.create_workspace
+#   workspace_api_keys        = [aws_grafana_workspace_api_key.key1]
 
-  configuration = jsonencode({
-    unifiedAlerting = {
-      enabled = true
-    }
-  })
+#   configuration = jsonencode({
+#     unifiedAlerting = {
+#       enabled = true
+#     }
+#   })
 
 
-  # Workspace IAM role
-  create_iam_role                = true
-  iam_role_name                  = local.name
-  use_iam_role_name_prefix       = true
-  iam_role_description           = local.description
-  iam_role_path                  = "/grafana/"
-  iam_role_force_detach_policies = true
-  iam_role_max_session_duration  = 7200
-  iam_role_tags                  = local.tags
+#   # Workspace IAM role
+#   create_iam_role                = true
+#   iam_role_name                  = local.name
+#   use_iam_role_name_prefix       = true
+#   iam_role_description           = local.description
+#   iam_role_path                  = "/grafana/"
+#   iam_role_force_detach_policies = true
+#   iam_role_max_session_duration  = 7200
+#   iam_role_tags                  = local.tags
 
-  tags = local.tags
-}
+#   tags = local.tags
+# }
