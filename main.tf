@@ -6,6 +6,7 @@ locals {
     GithubRepo = "terraform-aws-observability-accelerator"
     GithubOrg  = "aws-observability"
   }
+  grafana_iam_role_name = module.managed_grafana.workspace_iam_role_name
 }
 
 
@@ -32,14 +33,7 @@ EOF
 
 provider "grafana" {
   url  = local.amg_ws_endpoint
-  auth = var.grafana_api_key
-}
-
-resource "aws_grafana_workspace_api_key" "key1" {
-  key_name        = "test-key1"
-  key_role        = "VIEWER"
-  seconds_to_live = 3600
-  workspace_id    = local.amg_ws_id
+  auth = module.managed_grafana.workspace_api_keys["admin"].key
 }
 
 resource "grafana_data_source" "amp" {
@@ -62,39 +56,57 @@ resource "grafana_folder" "this" {
   title = "Observability Accelerator Dashboards"
 }
 
-# module "managed_grafana" {
-#   source  = "terraform-aws-modules/managed-service-grafana/aws"
-#   version = "1.8.0"
+module "managed_grafana" {
+  source  = "terraform-aws-modules/managed-service-grafana/aws"
+  version = "1.8.0"
 
-#   name                      = local.name
-#   associate_license         = false
-#   description               = local.description
-#   account_access_type       = "CURRENT_ACCOUNT"
-#   authentication_providers  = ["SAML"]
-#   permission_type           = "SERVICE_MANAGED"
-#   data_sources              = ["CLOUDWATCH", "PROMETHEUS", "XRAY"]
-#   notification_destinations = ["SNS"]
-#   stack_set_name            = local.name
-#   create                    = var.create
-#   create_workspace          = var.create_workspace
-#   workspace_api_keys        = [aws_grafana_workspace_api_key.key1]
+  name                      = local.name
+  associate_license         = false
+  description               = local.description
+  account_access_type       = "CURRENT_ACCOUNT"
+  authentication_providers  = ["AWS_SSO"]
+  permission_type           = "SERVICE_MANAGED"
+  data_sources              = ["CLOUDWATCH", "PROMETHEUS", "XRAY"]
+  notification_destinations = ["SNS"]
+  stack_set_name            = local.name
+  create                    = var.create
+  create_workspace          = var.create_workspace
 
-#   configuration = jsonencode({
-#     unifiedAlerting = {
-#       enabled = true
-#     }
-#   })
+  # Workspace API keys
+  workspace_api_keys = {
+    # viewer = {
+    #   key_name        = "viewer"
+    #   key_role        = "VIEWER"
+    #   seconds_to_live = 3600
+    # }
+    # editor = {
+    #   key_name        = "editor"
+    #   key_role        = "EDITOR"
+    #   seconds_to_live = 3600
+    # }
+    admin = {
+      key_name        = "admin"
+      key_role        = "ADMIN"
+      seconds_to_live = 3600
+    }
+  }
+
+  configuration = jsonencode({
+    unifiedAlerting = {
+      enabled = true
+    }
+  })
 
 
-#   # Workspace IAM role
-#   create_iam_role                = true
-#   iam_role_name                  = local.name
-#   use_iam_role_name_prefix       = true
-#   iam_role_description           = local.description
-#   iam_role_path                  = "/grafana/"
-#   iam_role_force_detach_policies = true
-#   iam_role_max_session_duration  = 7200
-#   iam_role_tags                  = local.tags
+  # Workspace IAM role
+  create_iam_role                = true
+  iam_role_name                  = "workspace-iam-role"
+  use_iam_role_name_prefix       = false
+  iam_role_description           = local.description
+  iam_role_path                  = "/grafana/"
+  iam_role_force_detach_policies = true
+  iam_role_max_session_duration  = 7200
+  iam_role_tags                  = local.tags
 
-#   tags = local.tags
-# }
+  tags = local.tags
+}

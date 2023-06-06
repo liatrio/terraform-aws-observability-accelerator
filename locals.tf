@@ -1,7 +1,9 @@
-data "aws_region" "current" {}
+data "aws_region" "current" {
+  name = "us-east-1"
+}
 
 data "aws_grafana_workspace" "this" {
-  workspace_id = var.managed_grafana_workspace_id
+  workspace_id = module.managed_grafana.workspace_id
 }
 
 locals {
@@ -11,7 +13,7 @@ locals {
   amp_ws_endpoint = "https://aps-workspaces.${local.amp_ws_region}.amazonaws.com/workspaces/${local.amp_ws_id}/"
 
   amg_ws_endpoint = "https://${data.aws_grafana_workspace.this.endpoint}"
-  amg_ws_id       = var.managed_grafana_workspace_id
+  amg_ws_id       = module.managed_grafana.workspace_id
 
   grafana_workspace_id = data.aws_grafana_workspace.this.workspace_id
   name = "aws-observability-accelerator-2"
