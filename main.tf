@@ -57,8 +57,8 @@ resource "grafana_folder" "this" {
 }
 
 module "managed_prometheus" {
-  #source = "git@github.com:liatrio/managed-prometheus-monitoring.git?ref=prometheus"
-  source = "/Users/botatolepbergen/managed-prometheus-monitoring"
+  source = "git@github.com:liatrio/managed-prometheus-monitoring.git?ref=prometheus"
+  #source = "/Users/botatolepbergen/managed-prometheus-monitoring"
   #version = "0.0.1"
 
   aws_region                      = local.amp_ws_region
