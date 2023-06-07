@@ -56,6 +56,17 @@ resource "grafana_folder" "this" {
   title = "Observability Accelerator Dashboards"
 }
 
+module "managed_prometheus" {
+  source = "git@github.com:liatrio/managed-prometheus-monitoring.git?ref=prometheus"
+  version = "0.0.1"
+
+  aws_region                      = local.amp_ws_region
+  dashboards_folder_id            = grafana_folder.this.id
+  managed_prometheus_worspace_ids = aws_prometheus_workspace.this.workspace_id
+  active_series_threshold         = 100000
+  ingestion_rate_threshold        = 70000
+  }
+
 module "managed_grafana" {
   source  = "terraform-aws-modules/managed-service-grafana/aws"
   version = "1.8.0"
