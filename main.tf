@@ -57,12 +57,13 @@ resource "grafana_folder" "this" {
 }
 
 module "managed_prometheus" {
-  source = "git@github.com:liatrio/managed-prometheus-monitoring.git?ref=prometheus"
-  version = "0.0.1"
+  #source = "git@github.com:liatrio/managed-prometheus-monitoring.git?ref=prometheus"
+  source = "/Users/botatolepbergen/managed-prometheus-monitoring"
+  #version = "0.0.1"
 
   aws_region                      = local.amp_ws_region
-  dashboards_folder_id            = grafana_folder.this.id
-  managed_prometheus_worspace_ids = aws_prometheus_workspace.this.workspace_id
+  dashboards_folder_id            = grafana_folder.this[0].id
+  managed_prometheus_workspace_ids = aws_prometheus_workspace.this[0].id
   active_series_threshold         = 100000
   ingestion_rate_threshold        = 70000
   }
@@ -98,7 +99,7 @@ module "managed_grafana" {
     admin = {
       key_name        = "admin"
       key_role        = "ADMIN"
-      seconds_to_live = 3600
+      seconds_to_live = 2592000
     }
   }
 
