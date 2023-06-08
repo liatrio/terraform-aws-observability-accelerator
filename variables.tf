@@ -86,3 +86,8 @@ variable "iam_role_arn" {
   type        = string
   default     = null
 }
+
+variable "user_name" {
+  description = "SSO user name"
+  type        = string
+}
