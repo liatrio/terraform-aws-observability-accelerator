@@ -66,7 +66,21 @@ module "managed_prometheus" {
   managed_prometheus_workspace_ids = aws_prometheus_workspace.this[0].id
   active_series_threshold         = 100000
   ingestion_rate_threshold        = 70000
+}
+
+# fetch user (could also be a group https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/identitystore_group)
+# the instance has to be fetched first and it doesn't require any arguments
+data "aws_ssoadmin_instances" "instances" {}
+data "aws_identitystore_user" "user" {
+  identity_store_id = tolist(data.aws_ssoadmin_instances.instances.identity_store_ids)[0]
+
+  alternate_identifier {
+    unique_attribute {
+      attribute_path  = "UserName"
+      attribute_value = "o11yTestUser" #TODO: Change this to be a variable
+    }
   }
+}
 
 module "managed_grafana" {
   source  = "terraform-aws-modules/managed-service-grafana/aws"
@@ -108,6 +122,15 @@ module "managed_grafana" {
       enabled = true
     }
   })
+
+  role_associations = {
+    "ADMIN" = {
+      "user_ids" = [data.aws_identitystore_user.user.user_id]
+    }
+    # "EDITOR" = {
+    #   "user_ids" = ["2222222222-abcdefgh-1234-5678-abcd-999999999999"]
+    # }
+  }
 
 
   # Workspace IAM role
