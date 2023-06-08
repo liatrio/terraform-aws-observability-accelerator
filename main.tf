@@ -77,7 +77,7 @@ data "aws_identitystore_user" "user" {
   alternate_identifier {
     unique_attribute {
       attribute_path  = "UserName"
-      attribute_value = "o11yTestUser" #TODO: Change this to be a variable
+      attribute_value = var.user_name #TODO: Change this to be a variable
     }
   }
 }
